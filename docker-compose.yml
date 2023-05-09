@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:latest
+    networks:
+      - backend_network
+  postgres:
+    image: postgres:latest
+    env_file:
+      - postgres.env
+    networks:
+      - backend_network
+  api:
+    build: ./backend
+    networks:
+      - backend_network
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+      - postgres
+    restart: always
+
+networks:
+  backend_network:
+    external: false
+    name: backend_network
